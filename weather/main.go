@@ -102,6 +102,6 @@ func main() {
 			chanceOfPrecipitation = "N/A"
 		}
 
-		fmt.Printf("\nPeriod: %s\nTemperature: %s\nChance of precipitation: %s\nDetailed Forecast: %s\n\n", period.Name, temperature, chanceOfPrecipitation, period.ForecastDetailed)
+		fmt.Printf("\nPeriod: %s\nTemperature: %s °F\nChance of precipitation: %s\nDetailed Forecast: %s\n\n", period.Name, temperature, chanceOfPrecipitation, period.ForecastDetailed)
 	}
 }
