@@ -49,6 +49,5 @@ func userInput() (int, error) {
 
 func pickRandomNumber() int {
 	rand.Seed(time.Now().UnixNano())
-	fmt.Println("calculating number.")
 	return rand.Intn(highNumber-lowNumber) + lowNumber
 }
