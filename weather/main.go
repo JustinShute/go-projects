@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -43,7 +43,7 @@ func main() {
 	}
 	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
 		return
@@ -69,7 +69,7 @@ func main() {
 	}
 	defer forecastRes.Body.Close()
 
-	forecastBody, err := ioutil.ReadAll(forecastRes.Body)
+	forecastBody, err := io.ReadAll(forecastRes.Body)
 	if err != nil {
 		fmt.Println("Error reading forecast response body:", err)
 		return
@@ -102,6 +102,6 @@ func main() {
 			chanceOfPrecipitation = "N/A"
 		}
 
-		fmt.Printf("\nPeriod: %s\nTemperature: %s °F\nChance of precipitation: %s\nDetailed Forecast: %s\n\n", period.Name, temperature, chanceOfPrecipitation, period.ForecastDetailed)
+		fmt.Printf("\nPeriod: %s\nTemperature: %s °F\nChance of precipitation: %s\n\nDetailed Forecast: %s\n\n", period.Name, temperature, chanceOfPrecipitation, period.ForecastDetailed)
 	}
 }
