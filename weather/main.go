@@ -16,14 +16,18 @@ type Forecast struct {
 type DetailedForecast struct {
 	Properties struct {
 		Periods []struct {
-			Name        string      `json:"name"`
-			Temperature interface{} `json:"temperature"`
+			Name                       string      `json:"name"`
+			Temperature                interface{} `json:"temperature"`
+			ForecastDetailed           interface{} `json:"detailedForecast"`
+			ProbabilityOfPrecipitation struct {
+				Value interface{} `json:"value"`
+			} `json:"probabilityOfPrecipitation"`
 		} `json:"periods"`
 	} `json:"properties"`
 }
 
 func main() {
-	// Fetch the forecast URL
+
 	url := "https://api.weather.gov/points/37.6763,-77.4186"
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -39,21 +43,18 @@ func main() {
 	}
 	defer res.Body.Close()
 
-	// Read the response body
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
 		return
 	}
 
-	// Unmarshal the JSON response to get the forecast URL
 	var forecastData Forecast
 	if err := json.Unmarshal(body, &forecastData); err != nil {
 		fmt.Println("Error decoding JSON:", err)
 		return
 	}
 
-	// Fetch the detailed forecast using the forecast URL
 	forecastURL := forecastData.Properties.Forecast
 	forecastReq, err := http.NewRequest("GET", forecastURL, nil)
 	if err != nil {
@@ -68,27 +69,39 @@ func main() {
 	}
 	defer forecastRes.Body.Close()
 
-	// Read the detailed forecast response body
 	forecastBody, err := ioutil.ReadAll(forecastRes.Body)
 	if err != nil {
 		fmt.Println("Error reading forecast response body:", err)
 		return
 	}
 
-	// Unmarshal the JSON response to get detailed forecast data
 	var detailedForecast DetailedForecast
 	if err := json.Unmarshal(forecastBody, &detailedForecast); err != nil {
 		fmt.Println("Error decoding forecast JSON:", err)
 		return
 	}
 
-	// Print the high and low temperature data
 	for _, period := range detailedForecast.Properties.Periods {
+		var temperature string
 		switch t := period.Temperature.(type) {
 		case string:
-			fmt.Printf("Period: %s, Temperature: %s\n", period.Name, t)
+			temperature = t
 		case float64:
-			fmt.Printf("Period: %s, Temperature: %.1f\n", period.Name, t)
+			temperature = fmt.Sprintf("%.1f", t)
 		}
+
+		var chanceOfPrecipitation string
+		if period.ProbabilityOfPrecipitation.Value != nil {
+			switch p := period.ProbabilityOfPrecipitation.Value.(type) {
+			case float64:
+				chanceOfPrecipitation = fmt.Sprintf("%.0f%%", p)
+			default:
+				chanceOfPrecipitation = "N/A"
+			}
+		} else {
+			chanceOfPrecipitation = "N/A"
+		}
+
+		fmt.Printf("\nPeriod: %s\nTemperature: %s\nChance of precipitation: %s\nDetailed Forecast: %s\n\n", period.Name, temperature, chanceOfPrecipitation, period.ForecastDetailed)
 	}
 }
