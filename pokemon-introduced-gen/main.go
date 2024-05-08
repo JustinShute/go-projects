@@ -27,7 +27,7 @@ type GenerationResponse struct {
 	} `json:"pokemon_species"`
 }
 
-// maxes the interations of the APIs to the amount of APIs in the slice, if the Pokemon isnt found in any API, print a statement.
+// maxes the iterations of the APIs to the amount of APIs in the slice, if the Pokemon isnt found in any API, print a statement.
 func fetchPokemonCheckUserInput(urls []string, userInput string, index int) {
 	if index >= len(urls) {
 		fmt.Println("Please input a valid Pokemon.")
