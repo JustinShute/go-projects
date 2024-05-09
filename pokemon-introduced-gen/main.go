@@ -37,7 +37,7 @@ func fetchPokemonCheckUserInput(urls []string, userInput string, index int) {
 	//handle error for if the Pokemon isnt found in that iteration, then increment the API index up 1, run the loop again.
 	resp, err := http.Get(urls[index])
 	if err != nil {
-		fmt.Println("Error: ", err)
+		fmt.Println("Error: ", err.Error())
 		fetchPokemonCheckUserInput(urls, userInput, index+1)
 	}
 	defer resp.Body.Close()
@@ -54,6 +54,13 @@ func fetchPokemonCheckUserInput(urls []string, userInput string, index int) {
 	//check if user input is in an API, if it is print a statement with the index +1, since the generation is 1 off of the index.
 	for _, species := range apiResponse.PokemonSpecies {
 		if species.PokemonName == strings.ToLower(userInput) {
+			switch species.PokemonName {
+			case "nidoran-f":
+				species.PokemonName = "Nidoran ♀"
+			case "nidoran-m":
+				species.PokemonName = "Nidoran ♂"
+			default:
+			}
 			fmt.Printf("%v was introduced in Generation %v.\n", strings.Title(species.PokemonName), index+1)
 			return
 
@@ -68,6 +75,13 @@ func main() {
 	var userPick string
 	fmt.Println("Please pick a Pokemon: ")
 	fmt.Scanln(&userPick)
+	switch strings.ToLower(userPick) {
+	case "nidoran", "nidoran female", "nidoran-female", "nidoran f", "nidoranf", "nidoran♀", "nidoran ♀", "nidoranfemale":
+		userPick = "nidoran-f"
+	case "nidoran male", "nidoran-male", "nidoran m", "nidoranm", "nidoran♂", "nidoran ♂", "nidoranmale":
+		userPick = "nidoran-m"
+	default:
 
+	}
 	fetchPokemonCheckUserInput(apiUrls, userPick, 0)
 }
