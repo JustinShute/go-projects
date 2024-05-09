@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	var isPlayAgain bool
 	userWins := 0
 	systemWins := 0
 	fmt.Println("Welcome to my rock, paper, scissors application.")
@@ -18,7 +19,7 @@ func main() {
 		if userPick == systemPick {
 			fmt.Printf("We both picked %v, lets play again!\n", systemPick)
 			fmt.Printf("The score is you %v and me %v.\n", userWins, systemWins)
-			isPlayAgain := playAgain()
+			isPlayAgain := playAgain(isPlayAgain)
 			if isPlayAgain {
 				continue
 			} else {
@@ -30,7 +31,7 @@ func main() {
 			fmt.Printf("I win, you picked %v and I picked %v\n", userPick, systemPick)
 			systemWins++
 			fmt.Printf("The score is you %v and me %v.\n", userWins, systemWins)
-			isPlayAgain := playAgain()
+			isPlayAgain := playAgain(isPlayAgain)
 			if isPlayAgain {
 				continue
 			} else {
@@ -40,7 +41,7 @@ func main() {
 			fmt.Printf("You win, you picked %v and I picked %v.\n", userPick, systemPick)
 			userWins++
 			fmt.Printf("The score is you %v and me %v.\n", userWins, systemWins)
-			isPlayAgain := playAgain()
+			isPlayAgain := playAgain(isPlayAgain)
 
 			if isPlayAgain {
 				continue
@@ -77,8 +78,8 @@ func systemChoice() string {
 	return randomChoice
 }
 
-func playAgain() bool {
-	var isPlayAgain bool
+func playAgain(isPlayAgain bool) bool {
+
 	var userPlayAgain string
 	fmt.Println("Do you want to play again?")
 	fmt.Scanln(&userPlayAgain)
@@ -91,6 +92,6 @@ func playAgain() bool {
 		return isPlayAgain
 	default:
 		fmt.Println("Please pick a valid response")
-		return playAgain()
+		return playAgain(isPlayAgain)
 	}
 }
